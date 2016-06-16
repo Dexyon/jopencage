@@ -1,13 +1,9 @@
 package com.byteowls.jopencage;
 
+import com.byteowls.jopencage.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.byteowls.jopencage.model.JOpenCageForwardRequest;
-import com.byteowls.jopencage.model.JOpenCageLatLng;
-import com.byteowls.jopencage.model.JOpenCageResponse;
-import com.byteowls.jopencage.model.JOpenCageReverseRequest;
 
 
 public class GeoCoderTests {
@@ -48,6 +44,33 @@ public class GeoCoderTests {
     
     JOpenCageResponse response = jOpenCageGeocoder.reverse(request);
     Assert.assertNotNull(response);
+  }
+
+  @Test
+  public void testAddRequestParamForward() {
+    JOpenCageForwardRequest request = new JOpenCageForwardRequest("Graz");
+    request.setMinConfidence(1);
+    request.setNoAnnotations(false);
+    request.setNoDedupe(true);
+    request.setAddRequest(true);
+
+    JOpenCageForwardResponse response = jOpenCageGeocoder.forward(request);
+    Assert.assertNotNull(response);
+
+    JOpenCageForwardRequest reqInResponse = response.getRequest();
+    Assert.assertNotNull(reqInResponse);
+  }
+
+  @Test
+  public void testAddRequestParamReverse() {
+    JOpenCageReverseRequest request = new JOpenCageReverseRequest(-22.6792, 14.5272);
+    request.setMinConfidence(1);
+    request.setPretty(true);
+    request.setAddRequest(true);
+
+    JOpenCageReverseResponse response = jOpenCageGeocoder.reverse(request);
+    JOpenCageReverseRequest reqInResponse = response.getRequest();
+    Assert.assertNotNull(reqInResponse);
   }
 
 }

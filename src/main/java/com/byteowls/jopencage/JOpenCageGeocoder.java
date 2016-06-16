@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map.Entry;
 
+import com.byteowls.jopencage.model.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
@@ -16,10 +17,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.byteowls.jopencage.model.JOpenCageForwardRequest;
-import com.byteowls.jopencage.model.JOpenCageRequest;
-import com.byteowls.jopencage.model.JOpenCageResponse;
-import com.byteowls.jopencage.model.JOpenCageReverseRequest;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -44,12 +41,12 @@ public class JOpenCageGeocoder {
     this.apiKey = apiKey;
   }
 
-  public JOpenCageResponse forward(JOpenCageForwardRequest request) {
-    return sendRequest(request);
+  public JOpenCageForwardResponse forward(JOpenCageForwardRequest request) {
+    return sendRequest(request, JOpenCageForwardResponse.class);
   }
 
-  public JOpenCageResponse reverse(JOpenCageReverseRequest request) {
-    return sendRequest(request);
+  public JOpenCageReverseResponse reverse(JOpenCageReverseRequest request) {
+    return sendRequest(request, JOpenCageReverseResponse.class);
   }
 
   public URI buildUri(JOpenCageRequest jOpenCageRequest) throws URISyntaxException {
@@ -71,7 +68,7 @@ public class JOpenCageGeocoder {
     return uriBuilder.build();
   }
 
-  private JOpenCageResponse sendRequest(JOpenCageRequest jOpenCageRequest) {
+  private <T extends JOpenCageResponse> T sendRequest(JOpenCageRequest jOpenCageRequest, final Class<T> clazz) {
     URI url = null;
     try {
       url = buildUri(jOpenCageRequest);
@@ -84,12 +81,12 @@ public class JOpenCageGeocoder {
       try (CloseableHttpClient httpclient = HttpClientBuilder.create().build()) {
         HttpGet getRequest = new HttpGet(url);
 
-        ResponseHandler<JOpenCageResponse> rh = new AbstractResponseHandler<JOpenCageResponse>() {
+        ResponseHandler<T> rh = new AbstractResponseHandler<T>() {
           @Override
-          public JOpenCageResponse handleEntity(HttpEntity entity) throws IOException {
+          public T handleEntity(HttpEntity entity) throws IOException {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            return mapper.readValue(entity.getContent(), JOpenCageResponse.class);
+            return mapper.readValue(entity.getContent(), clazz);
           }
         };
 

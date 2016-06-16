@@ -13,7 +13,8 @@ public class JOpenCageResponse {
   private String documentation;
   
   private List<JOpenCageLicence> licenses;
-  private JOpenCageRate rate; 
+  private JOpenCageRate rate;
+//  private JOpenCageRequest request;
   private List<JOpenCageResult> results;
   private JOpenCageStatus status;
   
@@ -36,6 +37,10 @@ public class JOpenCageResponse {
   public JOpenCageRate getRate() {
     return rate;
   }
+
+//  public JOpenCageRequest getRequest() {
+//    return request;
+//  }
   
   public List<JOpenCageResult> getResults() {
     return results;
@@ -43,6 +48,10 @@ public class JOpenCageResponse {
   
   public JOpenCageStatus getStatus() {
     return status;
+  }
+
+  public JOpenCageStayInformed getStayInformed() {
+    return stayInformed;
   }
   
   public String getThanks() {
